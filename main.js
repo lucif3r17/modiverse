@@ -140,6 +140,8 @@ SFX_SWOOSH.src = 'audio/sfx_swooshing.wav'
 let customPipeConfigs = []
 // index used for round-robin selection
 let nextCustomIndex = 0
+// Cheat: infinite mode when URL contains ?code=69
+const CHEAT_INFINITE = (typeof window !== 'undefined') && (new URLSearchParams(window.location.search).get('code') === '69')
 
 function computeTrimForImage(img) {
     try {
@@ -524,8 +526,12 @@ pipes = {
                     b.right > p.left &&
                     b.top < p.top.bottom &&
                     b.bottom > p.top.top) {
-                        gameState.current = gameState.gameOver
-                        SFX_LAWDA.play()
+                        // in infinite-cheat mode, collisions don't end the game
+                        if (!CHEAT_INFINITE) {
+                            gameState.current = gameState.gameOver
+                            SFX_LAWDA.play()
+                        }
+                        // collision sound as feedback
                         SFX_COLLISION.play()
                         
                 }
@@ -534,8 +540,12 @@ pipes = {
                     b.right > p.left &&
                     b.top < p.bot.bottom &&
                     b.bottom > p.bot.top) {
-                        gameState.current = gameState.gameOver
-                        SFX_LAWDA.play()
+                        // in infinite-cheat mode, collisions don't end the game
+                        if (!CHEAT_INFINITE) {
+                            gameState.current = gameState.gameOver
+                            SFX_LAWDA.play()
+                        }
+                        // collision sound as feedback
                         SFX_COLLISION.play()
                         
                 }
@@ -757,6 +767,18 @@ bird = {
             }
 
         } else {
+            // cheat: keep bird centered and skip physics when infinite-cheat active
+            if (CHEAT_INFINITE) {
+                this.y = cvs.height / 2
+                this.velocity = 0
+                this.rotation = 0
+                // advance wing animation so it still looks alive
+                if (frame%4 == 0) {
+                    this.fr += 1
+                }
+                if (this.fr > this.animation.length - 1) this.fr = 0
+                return
+            }
             //bird animation changes every 4 frames
             if (frame%4 == 0) {
                 this.fr += 1
@@ -790,9 +812,17 @@ bird = {
                 }
                 //then the game is over
                 if (gameState.current == gameState.play) {
-                    gameState.current = gameState.gameOver
-                    SFX_FALL.play()
-                    SFX_LAWDA.play()
+                    if (!CHEAT_INFINITE) {
+                        gameState.current = gameState.gameOver
+                        SFX_FALL.play()
+                        SFX_LAWDA.play()
+                    } else {
+                        // keep bird centered vertically in cheat mode
+                        this.y = cvs.height / 2
+                        this.velocity = 0
+                        this.rotation = 0
+                        this.fr = 1
+                    }
                 }
             }
             
@@ -854,6 +884,17 @@ bird1 = {
             }
 
         } else {
+            // cheat: keep bird1 centered and skip physics when infinite-cheat active
+            if (CHEAT_INFINITE) {
+                this.y = cvs.height / 2
+                this.velocity = 0
+                // advance wing animation so it still looks alive
+                if (frame%4 == 0) {
+                    this.fr += 1
+                }
+                if (this.fr > this.animation.length - 1) this.fr = 0
+                return
+            }
             //bird animation changes every 4 frames
             if (frame%4 == 0) {
                 this.fr += 1
@@ -876,9 +917,16 @@ bird1 = {
                 }
                 //then the game is over
                 if (gameState.current == gameState.play) {
-                    gameState.current = gameState.gameOver
-                    SFX_FALL.play()
-                    SFX_LAWDA.play()
+                    if (!CHEAT_INFINITE) {
+                        gameState.current = gameState.gameOver
+                        SFX_FALL.play()
+                        SFX_LAWDA.play()
+                    } else {
+                        // keep bird1 centered vertically in cheat mode
+                        this.y = cvs.height / 2
+                        this.velocity = 0
+                        this.fr = 1
+                    }
                 }
             }
             
@@ -942,6 +990,17 @@ bird2 = {
             }
 
         } else {
+            // cheat: keep bird2 centered and skip physics when infinite-cheat active
+            if (CHEAT_INFINITE) {
+                this.y = cvs.height / 2
+                this.velocity = 0
+                // advance wing animation so it still looks alive
+                if (frame%4 == 0) {
+                    this.fr += 1
+                }
+                if (this.fr > this.animation.length - 1) this.fr = 0
+                return
+            }
             //bird animation changes every 4 frames
             if (frame%4 == 0) {
                 this.fr += 1
@@ -964,9 +1023,16 @@ bird2 = {
                 }
                 //then the game is over
                 if (gameState.current == gameState.play) {
-                    gameState.current = gameState.gameOver
-                    SFX_FALL.play()
-                    SFX_LAWDA.play()
+                    if (!CHEAT_INFINITE) {
+                        gameState.current = gameState.gameOver
+                        SFX_FALL.play()
+                        SFX_LAWDA.play()
+                    } else {
+                        // keep bird2 centered vertically in cheat mode
+                        this.y = cvs.height / 2
+                        this.velocity = 0
+                        this.fr = 1
+                    }
                 }
             }
             
@@ -1060,7 +1126,7 @@ setInterval(loop, 17)
 //on mouse click // tap screen
 cvs.addEventListener('click', () => {
     //if ready screen >> go to play state
-    if (gameState.current == gameState.getReady) {
+        if (gameState.current == gameState.getReady) {
         gameState.current = gameState.play
     }
     //if play state >> bird keeps flying
