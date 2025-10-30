@@ -708,10 +708,10 @@ bird = {
     //values for drawing on canvas (scaled up)
     x: 50,
     y: 160,
-    w: 51, // 34 * 1.5
-    h: 36, // 24 * 1.5
+    w: 40, // reduced ~50% from 51
+    h: 27, // reduced ~50% from 36
     //bird's radius (scaled)
-    r: 18, // 12 * 1.5
+    r: 15, // reduced ~50% from 18
     //how much the bird flies per flap()
     fly: 5.25,
     //gravity increments the velocity per frame
@@ -850,10 +850,10 @@ bird1 = {
     //values for drawing on canvas (scaled up)
     x: 50,
     y: 160,
-    w: 51, // 34 * 1.5
-    h: 36, // 24 * 1.5
+    w: 26, // reduced ~50% from 51
+    h: 18, // reduced ~50% from 36
     //bird's radius (scaled)
-    r: 18, // 12 * 1.5
+    r: 9, // reduced ~50% from 18
     //how much the bird flies per flap()
     fly: 5.25,
     //gravity increments the velocity per frame
@@ -956,10 +956,10 @@ bird2 = {
     //values for drawing on canvas (scaled up)
     x: 50,
     y: 160,
-    w: 51, // 34 * 1.5
-    h: 36, // 24 * 1.5
+    w: 26, // reduced ~50% from 51
+    h: 18, // reduced ~50% from 36
     //bird's radius (scaled)
-    r: 18, // 12 * 1.5
+    r: 9, // reduced ~50% from 18
     //how much the bird flies per flap()
     fly: 5.25,
     //gravity increments the velocity per frame
