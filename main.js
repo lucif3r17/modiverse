@@ -135,6 +135,30 @@ SFX_LAWDA.src = 'audio/lawda.wav'
 SFX_FALL.src = 'audio/sfx_die.wav'
 SFX_SWOOSH.src = 'audio/sfx_swooshing.wav'
 
+// Background music (mumkin.wav) - play on page load if allowed,
+// otherwise start on the first user interaction (click/space).
+const BG_MUSIC = new Audio('audio/mumkin.wav')
+BG_MUSIC.loop = true
+BG_MUSIC.volume = 0.6 // 0.0 - 1.0
+try { BG_MUSIC.preload = 'auto' } catch (e) {}
+let bgMusicStarted = false
+
+function tryStartBgMusic() {
+    if (bgMusicStarted) return
+    try {
+        const p = BG_MUSIC.play()
+        if (p && typeof p.then === 'function') {
+            p.then(() => { bgMusicStarted = true })
+             .catch(err => console.warn('Background music play rejected (will wait for user gesture)', err))
+        }
+    } catch (err) {
+        console.warn('Background music play error:', err)
+    }
+}
+
+// Try to start immediately (may be blocked by autoplay policy)
+tryStartBgMusic()
+
 // --- New: support multiple custom pipe configs ---
 // Each entry holds: { img: Image, src: string, gap: number, trim: object|null, loaded: bool }
 let customPipeConfigs = []
@@ -1125,6 +1149,8 @@ setInterval(loop, 17)
 *************************/
 //on mouse click // tap screen
 cvs.addEventListener('click', () => {
+    // ensure background music starts on first user interaction if autoplay was blocked
+    tryStartBgMusic()
     //if ready screen >> go to play state
         if (gameState.current == gameState.getReady) {
         gameState.current = gameState.play
@@ -1145,6 +1171,8 @@ cvs.addEventListener('click', () => {
 })
 //on spacebar
 document.body.addEventListener('keydown', (e) => {
+    // try to start background music on first key press (spacebar)
+    if (e.keyCode == 32) tryStartBgMusic()
     //if ready screen >> go to play state
     if (e.keyCode == 32) {
         if (gameState.current == gameState.getReady) {
